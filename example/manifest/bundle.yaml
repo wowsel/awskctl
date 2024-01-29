@@ -11,7 +11,6 @@ metadata:
 # stringData:
 #   AWS_SECRET_ACCESS_KEY: "xxxx"
 #   AWS_ACCESS_KEY_ID: "xxx"
-#   AWS_ACCOUNT: "xxx"
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -35,6 +34,15 @@ spec:
             envFrom:
               - secretRef:
                   name: ecr-token-updater-secret
+            env:
+              - name: AWS_ACCOUNT
+                value: "<aws_account_value>"
+              - name: AWS_REGION
+                value: "<aws_region_value>"
+              - name: TARGET_NAMESPACES
+                value: "<list_of_target_namespaces>"
+              - name: SECRET_COPIER
+                value: "<secret_copier_value>"
           restartPolicy: Never
 ---
 apiVersion: v1

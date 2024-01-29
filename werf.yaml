@@ -7,6 +7,14 @@ shell:
   beforeInstall:
   - adduser -S aws
   - apk update && apk upgrade && apk add --no-cache bash kubectl aws-cli
+git:
+  - add: /
+    to: /
+    includePaths:
+    - entrypoint.sh
+    stageDependencies:
+      install:
+      - '*'
 docker:
   WORKDIR: /
   USER: aws
