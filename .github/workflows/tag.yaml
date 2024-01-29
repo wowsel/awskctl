@@ -1,0 +1,26 @@
+name: RELEASE
+on:
+  release:
+    types: [published]
+jobs:
+  build-tag:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: install werf
+        uses: werf/actions/install@v1.2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: build-and-push
+        run: |
+          export PATH=$PATH:~/bin
+          REPO_NAME=${GITHUB_REPOSITORY##*/}
+          type werf && source $(werf ci-env github --as-file)
+          werf build --repo wowsel/$REPO_NAME-build --final-repo wowsel/$REPO_NAME --add-custom-tag $GITHUB_REF_NAME

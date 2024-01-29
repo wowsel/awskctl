@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ecr-token-updater
+---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: ecr-token-updater-secret
+#   namespace: ecr-token-updater
+# stringData:
+#   AWS_SECRET_ACCESS_KEY: "xxxx"
+#   AWS_ACCESS_KEY_ID: "xxx"
+#   AWS_ACCOUNT: "xxx"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ecr-token-updater
+  namespace: ecr-token-updater
+spec:
+  schedule: "0 */10 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 10
+  suspend: false
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: sa-ecr-token-updater
+          containers:
+          - name: ecr-token-updater
+            image: image:tag
+            imagePullPolicy: IfNotPresent
+            envFrom:
+              - secretRef:
+                  name: ecr-token-updater-secret
+          restartPolicy: Never
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-ecr-token-updater
+  namespace: ecr-token-updater
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: aws-registry-role
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["aws-registry"]
+  verbs: ["get","delete","patch"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ecr-token-updater-role-binding
+  namespace: ecr-token-updater
+subjects:
+- kind: ServiceAccount
+  name: sa-ecr-token-updater
+  namespace: ecr-token-updater
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: aws-registry-role
+  apiGroup: rbac.authorization.k8s.io
+---
