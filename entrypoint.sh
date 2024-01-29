@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -euo pipefail
 
 echo "Retrieving Docker Credentials for the AWS ECR Registry ${AWS_ACCOUNT}"
