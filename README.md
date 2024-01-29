@@ -25,7 +25,6 @@
 - Убедитесь, что у вас есть достаточные разрешения для выполнения команд в указанных пространствах имен.
 - Если `SECRET_COPIER` не установлена или установлена не в `true`, аннотации и метки для копирования секретов не будут применены.
 - Примеры манифестов для Kubernetes можно найти в папке `example`.
-- При использовании пространств имен, отличных от `default`, необходимо будет изменить RBAC политики в соответствии с вашими требованиями безопасности.
 
 ---
 # Instructions for Using the entrypoint.sh Script
@@ -55,4 +54,3 @@ This script is designed to create or update Docker secrets in specified Kubernet
 - Ensure you have sufficient permissions to execute commands in the specified namespaces.
 - If `SECRET_COPIER` is not set or not set to `true`, annotations and labels for secret copying will not be applied.
 - Examples of Kubernetes manifests can be found in the `example` folder.
-- When using namespaces other than `default`, RBAC policies will need to be adjusted according to your security requirements.
